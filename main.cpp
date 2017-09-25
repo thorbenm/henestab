@@ -11,11 +11,33 @@ analog_digital_converter signal(
 		);
 
 const int pwm_pin = 0;
+const int pwm_max = 1023;
 
 int main(){
-	softPwmCreate (pwm_pin, 0, 1023) ;
-	softPwmWrite (pwm_pin, 512) ;
+	softPwmCreate (pwm_pin, 0, pwm_max) ;
+     	softPwmWrite (pwm_pin, pwm_max / 2);
+//	for(;;){
+//	        for(int j = 0; j <= pwm_max; j++){
+//		      	softPwmWrite (pwm_pin, j);
+//			usleep(5000000 / pwm_max);
+//	        }
+//	}
 	for(;;){
+		// print time nicely
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer[80];
+		time (&rawtime);
+		timeinfo = localtime(&rawtime);
+		strftime(buffer,sizeof(buffer),"%d-%m-%Y %I:%M:%S",timeinfo);
+		std::string str(buffer);
+		std::cout << str << "\t";
+
+		//print time in seconds
+		time_t seconds;
+		seconds = time (NULL);
+		std::cout << seconds << "\t";
+
 		std::cout << signal.read() << std::endl;
 		usleep(1000000);
 	}
