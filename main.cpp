@@ -29,7 +29,7 @@ int main(){
 		char buffer[80];
 		time (&rawtime);
 		timeinfo = localtime(&rawtime);
-		strftime(buffer,sizeof(buffer),"%d-%m-%Y %I:%M:%S",timeinfo);
+		strftime(buffer,sizeof(buffer),"%Y-%m-%d %I:%M:%S",timeinfo);
 		std::string str(buffer);
 		std::cout << str << "\t";
 
