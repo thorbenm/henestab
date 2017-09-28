@@ -8,13 +8,19 @@ analog_digital_converter signal(
 		0.0,				//min_voltage (dac output at transmitting 0}
 		3.0,				//max_voltage (dac output at transmitting 2^bits-1 BEWARE ORIENTATION!!!)
 		1				//Chip select
-		);
+);
 
-pid control(1,0,0,500,-1);
+int kp = 5;
+int ki = 0;
+int kd = 0;
+int offset = 500;
+int int_error_max = 200;
+
+pid control(kp, ki, kd, offset, int_error_max);
 
 const int pwm_pin = 0;
 const int pwm_max = 1023;
-int goal = 550;
+int goal = 600;
 int input;
 int output;
 
@@ -41,7 +47,7 @@ int main(){
 		char buffer[80];
 		time (&rawtime);
 		timeinfo = localtime(&rawtime);
-		strftime(buffer,sizeof(buffer),"%Y-%m-%d %I:%M:%S",timeinfo);
+		strftime(buffer,sizeof(buffer),"%Y-%m-%d %H:%M:%S",timeinfo);
 		std::string str(buffer);
 		std::cout << str << "\t";
 
@@ -52,7 +58,8 @@ int main(){
 
 		std::cout << input << "\t";
 
-		std::cout << output << std::endl;
+		std::cout << output << "\t";
+		std::cout << kp << "\t" << ki << "\t" << kd << "\t" << offset << "\t" << int_error_max << std::endl;
 		usleep(1000000);
 	}
 	return 0;
