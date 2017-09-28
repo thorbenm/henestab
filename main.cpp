@@ -10,20 +10,31 @@ analog_digital_converter signal(
 		1				//Chip select
 		);
 
+pid control(1,0,0,500,-1);
+
 const int pwm_pin = 0;
 const int pwm_max = 1023;
+int goal = 550;
+int input;
+int output;
 
 int main(){
 	softPwmCreate (pwm_pin, 0, pwm_max) ;
-	int output = pwm_max / 2;
-     	softPwmWrite (pwm_pin, output);
-//	for(;;){
-//	        for(int j = 0; j <= pwm_max; j++){
-//		      	softPwmWrite (pwm_pin, j);
-//			usleep(5000000 / pwm_max);
-//	        }
-//	}
+	control.set_goal(goal);
+	input = signal.read();
+	control.set_value(input);
 	for(;;){
+		// update:
+		input = signal.read();
+		output = control.update(input);
+		if(output > pwm_max){
+			output = pwm_max;
+		}
+		if(output < 0){
+			output = 0;
+		}
+     		softPwmWrite (pwm_pin, output);
+
 		// print time nicely
 		time_t rawtime;
 		struct tm * timeinfo;
@@ -39,9 +50,9 @@ int main(){
 		seconds = time (NULL);
 		std::cout << seconds << "\t";
 
-		std::cout << output << "\t" << pwm_max << "\t";
+		std::cout << input << "\t";
 
-		std::cout << signal.read() << std::endl;
+		std::cout << output << std::endl;
 		usleep(1000000);
 	}
 	return 0;
