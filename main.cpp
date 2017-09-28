@@ -15,7 +15,8 @@ const int pwm_max = 1023;
 
 int main(){
 	softPwmCreate (pwm_pin, 0, pwm_max) ;
-     	softPwmWrite (pwm_pin, pwm_max / 2);
+	int output = pwm_max / 2;
+     	softPwmWrite (pwm_pin, output);
 //	for(;;){
 //	        for(int j = 0; j <= pwm_max; j++){
 //		      	softPwmWrite (pwm_pin, j);
@@ -37,6 +38,8 @@ int main(){
 		time_t seconds;
 		seconds = time (NULL);
 		std::cout << seconds << "\t";
+
+		std::cout << output << "\t" << pwm_max << "\t";
 
 		std::cout << signal.read() << std::endl;
 		usleep(1000000);

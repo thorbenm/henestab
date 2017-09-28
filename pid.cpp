@@ -1,6 +1,6 @@
 #include "pid.h"
 
-pid::pid(double kp2, double ki2, double kd2, double offset2){
+pid::pid(double kp2, double ki2, double kd2, double offset2, double _int_error_max){
 	kp = kp2;
 	ki  = ki2;
 	kd = kd2;
@@ -9,6 +9,7 @@ pid::pid(double kp2, double ki2, double kd2, double offset2){
 	k2 = -kp - 2.0 * kd;
 	k3 = kd;
 	first_update = true;
+	int_error_max = _int_error_max;
 }
 
 double pid::update(double input){
@@ -23,6 +24,15 @@ double pid::update(double input){
 		dt = elapsed_seconds.count();
 		int_error += error * dt;
 		diff_error = (error - prev_error) / dt;
+	}
+
+	if(int_error_max > 0){
+		if(int_error > int_error_max){
+			int_error = int_error_max;
+		}
+		if(int_error < -int_error_max){
+			int_error = -int_error_max;
+		}
 	}
 
 //	if(ki<1e-5){ //if ki == 0
